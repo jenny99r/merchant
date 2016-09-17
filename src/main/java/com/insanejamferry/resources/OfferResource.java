@@ -8,8 +8,6 @@ import javax.ws.rs.core.*;
 import java.net.URI;
 import java.util.Optional;
 
-import static java.lang.String.valueOf;
-
 @Path("/offer")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -25,14 +23,14 @@ public class OfferResource {
     @POST
     public Response createOffer(Offer offer,
                                 @Context UriInfo uriInfo) {
-        int offerId = offerRepository.create(offer);
-        URI createdOfferUri = uriInfo.getAbsolutePathBuilder().path(valueOf(offerId)).build();
+        String offerId = offerRepository.create(offer);
+        URI createdOfferUri = uriInfo.getAbsolutePathBuilder().path(offerId).build();
         return Response.created(createdOfferUri).build();
     }
 
     @GET
     @Path("/{id}")
-    public Response getOffer(@PathParam("id") int id) {
+    public Response getOffer(@PathParam("id") String id) {
         Optional<Offer> offer = offerRepository.get(id);
         if (!offer.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();

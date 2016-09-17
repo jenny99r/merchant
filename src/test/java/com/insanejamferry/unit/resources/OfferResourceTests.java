@@ -30,7 +30,7 @@ public class OfferResourceTests {
     public void getReturnsRequestedOffer() {
         OfferResource offerResource = new OfferResource(new TestOfferRepository());
 
-        Response response = offerResource.getOffer(23);
+        Response response = offerResource.getOffer("23");
 
         Offer offer = (Offer) response.getEntity();
         assertThat(offer, Is.is(EXPECTED_OFFER));
@@ -40,20 +40,20 @@ public class OfferResourceTests {
     public void getReturns404IfRequestedOfferNotFound() {
         OfferResource offerResource = new OfferResource(new TestOfferRepository());
 
-        Response response = offerResource.getOffer(54);
+        Response response = offerResource.getOffer("54");
 
         assertThat(response.getStatus(), Is.is(404));
     }
 
     private class TestOfferRepository implements IOfferRepository {
         @Override
-        public int create(Offer offer) {
-            return 5;
+        public String create(Offer offer) {
+            return "5";
         }
 
         @Override
-        public Optional<Offer> get(int id) {
-            if (id == 23) {
+        public Optional<Offer> get(String id) {
+            if ("23".equals(id)) {
                 return Optional.of(EXPECTED_OFFER);
             } else {
                 return Optional.empty();

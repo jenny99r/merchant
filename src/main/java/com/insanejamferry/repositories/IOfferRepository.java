@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface IOfferRepository {
 
-    int create(Offer offer);
-    Optional<Offer> get(int id);
+    String create(Offer offer);
+    Optional<Offer> get(String id);
 }
