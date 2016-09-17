@@ -1,5 +1,6 @@
 package com.insanejamferry.application;
 
+import com.insanejamferry.repositories.MapOfferRepository;
 import com.insanejamferry.resources.OfferResource;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
@@ -13,6 +14,6 @@ public class MerchantApplication extends Application<Configuration> {
 
     @Override
     public void run(Configuration configuration, Environment environment) throws Exception {
-        environment.jersey().register(new OfferResource());
+        environment.jersey().register(new OfferResource(new MapOfferRepository()));
     }
 }
