@@ -1,5 +1,8 @@
 package com.insanejamferry.acceptance;
 
+import com.insanejamferry.application.MerchantApplication;
+import io.dropwizard.Configuration;
+import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -13,7 +16,12 @@ import java.io.IOException;
 
 public class MerchantTests {
 
-    private static final String SERVICE_URL = "http://localhost:3456";
+    @ClassRule
+    public static final DropwizardAppRule<Configuration> RULE =
+            new DropwizardAppRule<Configuration>(MerchantApplication.class);
+
+
+    private static final String SERVICE_URL = "http://localhost:8080";
     private CloseableHttpClient httpClient;
 
     @Before
@@ -27,7 +35,6 @@ public class MerchantTests {
     }
 
     @Test
-    @Ignore
     public void createsAnOfferWithADescription() throws IOException {
         StringEntity jsonEntity = new StringEntity("{\"description\": \"test offer\"}");
 
