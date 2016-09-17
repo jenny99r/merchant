@@ -15,13 +15,13 @@ import static org.junit.Assert.assertThat;
 public class OfferResourceTests {
 
     private static final String PATH = "offer";
-    private static final Offer EXPECTED_OFFER = new Offer();
+    private static final Offer EXPECTED_OFFER = new Offer("");
 
     @Test
     public void createReturnsPathToCreatedOffer() {
         OfferResource offerResource = new OfferResource(new TestOfferRepository());
 
-        Response response = offerResource.createOffer(new Offer(), new TestUriInfo(PATH));
+        Response response = offerResource.createOffer(new Offer(""), new TestUriInfo(PATH));
 
         assertThat(response.getLocation().getPath(), Is.is(PATH + "/5"));
     }
