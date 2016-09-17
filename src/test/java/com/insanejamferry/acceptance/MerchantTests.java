@@ -1,6 +1,7 @@
 package com.insanejamferry.acceptance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import com.insanejamferry.application.MerchantApplication;
 import io.dropwizard.Configuration;
 import io.dropwizard.testing.junit.DropwizardAppRule;
@@ -10,12 +11,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.hamcrest.collection.IsMapContaining;
 import org.hamcrest.core.Is;
 import org.junit.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class MerchantTests {
@@ -40,22 +44,31 @@ public class MerchantTests {
     }
 
     @Test
-    public void createsAnOfferWithADescriptionWhichCanThenBeFetched() throws IOException {
+    public void createsAnOfferWhichCanThenBeFetched() throws IOException {
         final String offerDescription = "test offer";
+        final Map prices = new ImmutableMap.Builder<String, String>()
+                .put("GBP", "7.67")
+                .put("EUR", "2.34")
+                .put("USD", "4.56")
+                .build();
 
-        String offerUrl = createOffer(offerDescription);
+        String offerUrl = createOffer(offerDescription, prices);
 
         Offer offer = getOffer(offerUrl);
 
-        assertThat(offer.description, Is.is(offerDescription));
+        assertThat(offer.description, is(offerDescription));
+
+        assertThat(offer.prices.size(), is(3));
+        assertThat(offer.prices, IsMapContaining.hasEntry("GBP", "7.67"));
     }
 
     private Offer getOffer(String offerUrl) throws IOException {
         return objectMapper.readValue(new URL(offerUrl), Offer.class);
     }
 
-    private String createOffer(String offerDescription) throws IOException {
-        final StringEntity jsonEntity = new StringEntity(objectMapper.writeValueAsString(new Offer(offerDescription)));
+    private String createOffer(String offerDescription, Map prices) throws IOException {
+        Offer offer = new Offer(offerDescription, prices);
+        final StringEntity jsonEntity = new StringEntity(objectMapper.writeValueAsString(offer));
 
         final HttpPost post = new HttpPost(SERVICE_URL + "/offer");
         post.addHeader("content-type", "application/json");
@@ -63,7 +76,7 @@ public class MerchantTests {
 
         final CloseableHttpResponse response = httpClient.execute(post);
 
-        assertThat(response.getStatusLine().getStatusCode(), Is.is(HttpStatus.SC_CREATED));
+        assertThat(response.getStatusLine().getStatusCode(), is(HttpStatus.SC_CREATED));
 
         final String createdOfferUrl = response.getHeaders("location")[0].getValue();
         response.close();
@@ -73,15 +86,21 @@ public class MerchantTests {
 
     private static class Offer {
         private String description;
+        private Map<String, String> prices;
 
         public Offer() {}
 
-        public Offer(String description) {
+        public Offer(String description, Map<String, String> prices) {
             this.description = description;
+            this.prices = prices;
         }
 
         public String getDescription() {
             return description;
+        }
+
+        public Map<String, String> getPrices() {
+            return prices;
         }
     }
 }

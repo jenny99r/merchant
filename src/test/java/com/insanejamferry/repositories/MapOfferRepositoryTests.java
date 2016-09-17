@@ -24,7 +24,7 @@ public class MapOfferRepositoryTests {
 
     @Test
     public void returnsTheOfferIfOfferHasBeenCreated() {
-        Offer offer = new Offer("");
+        Offer offer = new Offer("", null);
         MapOfferRepository mapOfferRepository = new MapOfferRepository();
 
         String offerId = mapOfferRepository.create(offer);
