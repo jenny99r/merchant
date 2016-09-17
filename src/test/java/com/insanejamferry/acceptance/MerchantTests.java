@@ -40,14 +40,6 @@ public class MerchantTests {
     }
 
     @Test
-    public void createsAnOfferWithADescription() throws IOException {
-        final String offerDescription = "test offer";
-
-        createOffer(offerDescription);
-    }
-
-    @Test
-    @Ignore
     public void createsAnOfferWithADescriptionWhichCanThenBeFetched() throws IOException {
         final String offerDescription = "test offer";
 
@@ -81,6 +73,8 @@ public class MerchantTests {
 
     private static class Offer {
         private String description;
+
+        public Offer() {}
 
         public Offer(String description) {
             this.description = description;
