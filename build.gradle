@@ -1,7 +1,17 @@
 apply plugin: 'java'
+apply plugin: 'gradle-one-jar'
 
 repositories {
     mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+    }
 }
 
 sourceCompatibility = 1.8
@@ -15,4 +25,8 @@ dependencies {
     testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
     testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: '1.0.0'
 
+}
+
+task makeJar(type: OneJar) {
+    mainClass = 'com.insanejamferry.application.MerchantApplication'
 }
